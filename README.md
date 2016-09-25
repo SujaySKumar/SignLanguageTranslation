@@ -1,0 +1,1 @@
+A research project aiming to translate American SIgn Language into text/voice based on visual cues only.
