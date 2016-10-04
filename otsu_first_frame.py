@@ -2,7 +2,20 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
-cap = cv2.VideoCapture('test1.mov')
+
+def create_feature_vector(contours):
+    vec = []
+    for contour in contours:
+        if contour is not None:
+            flattened_contour = contour.flatten()
+            flattened_contour = flattened_contour.astype('float64')
+            flattened_contour = flattened_contour/flattened_contour.max()
+            vec = vec+flattened_contour.tolist()
+    return vec
+
+
+final_feature_vector = []
+cap = cv2.VideoCapture('test2.mov')
 while(cap.isOpened()):
     #Read the frame
     ret, frame = cap.read()
@@ -32,7 +45,6 @@ while(cap.isOpened()):
 
     #To find out the contour with the maximum area. The border comes out to be the contour with
     #the largest area. Hence remove the largest and get all other contours.
-    #Remove contours with area less than 50
     max_area = 0
     _, contours, hierarchy = cv2.findContours(th3,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     hulls = []
@@ -40,7 +52,9 @@ while(cap.isOpened()):
     for i in range(len(contours)):
         cnt=contours[i]
         area = cv2.contourArea(cnt)
-        if area<50:
+
+        #Excluding areas which are too small
+        if area<30:
             areas_to_exclude.append(i)
         hulls.append(cv2.convexHull(cnt))
         if(area>max_area):
@@ -67,8 +81,15 @@ while(cap.isOpened()):
 
     cv2.imshow('output',frame)
     cv2.imshow('input', img)
+
+    frame_feature_vector = create_feature_vector(contours)
+    print len(frame_feature_vector)
+    final_feature_vector.append(frame_feature_vector)
+    print "final-----------------", len(final_feature_vector)
+
     cv2.waitKey()
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 cap.release()
+print "whaaat-------------", len(final_feature_vector)
