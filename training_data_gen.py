@@ -4,6 +4,16 @@ import numpy as np
 from matplotlib import pyplot as plt
 from feature_vector_gen import get_feature_vector
 
+'''
+Training data is in the following format:
+
+t_data = [TrainingInstance1, TrainingInstance2, TrainingInstance3.......]
+Number of Training Instances i.e len(t_data) = number of training videos
+
+TrainingInstance1 = [InputVector, TargetVector]
+InputVector = [Frame1, Frame2, Frame3.......]
+Frame1 = [list of 1000 floats]
+'''
 class GenerateTraining:
 
     def __init__(self, path):
